@@ -34,4 +34,11 @@ dependencies {
     implementation 'androidx.core:core-ktx:1.9.0'
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'com.google.android.material:material:1.8.0'
+
+    // Firebase BOM and Auth (Email/Password)
+    implementation platform('com.google.firebase:firebase-bom:32.1.0')
+    implementation 'com.google.firebase:firebase-auth-ktx'
 }
+
+// Apply the Google services plugin (required for Firebase)
+apply plugin: 'com.google.gms.google-services'
