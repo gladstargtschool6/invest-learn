@@ -1,0 +1,22 @@
+# Built application files
+.gradle
+/local.properties
+/.idea
+.DS_Store
+/build
+/captures
+.externalNativeBuild
+
+# Gradle
+.gradle/
+build/
+
+# Android Studio
+.idea/
+*.iml
+
+# Local config
+local.properties
+
+# Keystore
+*.jks
