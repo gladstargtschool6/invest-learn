@@ -1,7 +1,7 @@
 package com.gladstargtschool6.investlearn
 
+import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -22,6 +22,10 @@ import org.xmlpull.v1.XmlPullParserException
 import android.util.Xml
 import java.io.IOException
 import java.io.StringReader
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import java.io.File
+
 
 data class FeedItem(
     val title: String,
@@ -33,6 +37,8 @@ data class FeedItem(
 class FeedActivity : AppCompatActivity() {
     private val FEED_URL = "https://library.skillscommons.org/server/opensearch/search?format=atom&sort=score&sort_direction=DESC&query=Leadership%20and%20entrepreneurship%20&rpp=10"
     private val client = OkHttpClient()
+    private val gson = Gson()
+    private val CACHE_FILE = "feed_cache.json"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,13 +49,28 @@ class FeedActivity : AppCompatActivity() {
 
         // Load feed in background
         lifecycleScope.launch {
-            val result = fetchAndParseFeed()
-            if (result == null) {
-                Toast.makeText(this@FeedActivity, "Failed to load feed", Toast.LENGTH_LONG).show()
-            } else {
-                rv.adapter = FeedAdapter(result) { item ->
-                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(item.link))
+            // Try to fetch live feed first
+            val live = fetchAndParseFeed()
+            if (live != null && live.isNotEmpty()) {
+                // Save cache
+                saveCache(live)
+                rv.adapter = FeedAdapter(live) { item ->
+                    val intent = Intent(this@FeedActivity, WebViewActivity::class.java)
+                    intent.putExtra("url", item.link)
                     startActivity(intent)
+                }
+            } else {
+                // Try to load cache
+                val cached = loadCache()
+                if (cached != null && cached.isNotEmpty()) {
+                    Toast.makeText(this@FeedActivity, "Loaded cached resources (offline)", Toast.LENGTH_SHORT).show()
+                    rv.adapter = FeedAdapter(cached) { item ->
+                        val intent = Intent(this@FeedActivity, WebViewActivity::class.java)
+                        intent.putExtra("url", item.link)
+                        startActivity(intent)
+                    }
+                } else {
+                    Toast.makeText(this@FeedActivity, "Failed to load feed and no cache available", Toast.LENGTH_LONG).show()
                 }
             }
         }
@@ -121,6 +142,29 @@ class FeedActivity : AppCompatActivity() {
         }
 
         return items
+    }
+
+    private fun saveCache(items: List<FeedItem>) {
+        try {
+            val json = gson.toJson(items)
+            val file = File(filesDir, CACHE_FILE)
+            file.writeText(json)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    private fun loadCache(): List<FeedItem>? {
+        return try {
+            val file = File(filesDir, CACHE_FILE)
+            if (!file.exists()) return null
+            val json = file.readText()
+            val type = object : TypeToken<List<FeedItem>>() {}.type
+            gson.fromJson<List<FeedItem>>(json, type)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
     }
 }
 

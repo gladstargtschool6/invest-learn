@@ -42,6 +42,12 @@ dependencies {
     // Networking and coroutines for feed fetching
     implementation 'com.squareup.okhttp3:okhttp:4.11.0'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4'
+
+    // Gson for caching JSON
+    implementation 'com.google.code.gson:gson:2.10.1'
+
+    // WebView compatibility helpers
+    implementation 'androidx.webkit:webkit:1.6.0'
 }
 
 // Apply the Google services plugin (required for Firebase)
