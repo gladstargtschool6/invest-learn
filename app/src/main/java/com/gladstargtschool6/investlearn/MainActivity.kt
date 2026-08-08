@@ -13,6 +13,7 @@ class MainActivity : AppCompatActivity() {
         val btnEntrepreneur = findViewById<Button>(R.id.btnEntrepreneurship)
         val btnLeadership = findViewById<Button>(R.id.btnLeadership)
         val btnInteractive = findViewById<Button>(R.id.btnInteractive)
+        val btnResources = findViewById<Button>(R.id.btnResources)
 
         btnEntrepreneur.setOnClickListener {
             startModule("Entrepreneurship")
@@ -24,6 +25,10 @@ class MainActivity : AppCompatActivity() {
 
         btnInteractive.setOnClickListener {
             startModule("Interactive Model")
+        }
+
+        btnResources.setOnClickListener {
+            startActivity(Intent(this, FeedActivity::class.java))
         }
     }
 

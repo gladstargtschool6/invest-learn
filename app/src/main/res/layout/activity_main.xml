@@ -34,4 +34,11 @@
         android:text="Interactive Model"
         android:layout_marginTop="8dp" />
 
+    <Button
+        android:id="@+id/btnResources"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Resources"
+        android:layout_marginTop="8dp" />
+
 </LinearLayout>

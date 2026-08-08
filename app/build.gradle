@@ -38,6 +38,10 @@ dependencies {
     // Firebase BOM and Auth (Email/Password)
     implementation platform('com.google.firebase:firebase-bom:32.1.0')
     implementation 'com.google.firebase:firebase-auth-ktx'
+
+    // Networking and coroutines for feed fetching
+    implementation 'com.squareup.okhttp3:okhttp:4.11.0'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4'
 }
 
 // Apply the Google services plugin (required for Firebase)
