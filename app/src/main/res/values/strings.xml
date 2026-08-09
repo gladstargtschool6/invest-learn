@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Invest Learn</string>
+    <string name="entrepreneurship">Entrepreneurship</string>
+    <string name="leadership">Leadership</string>
+    <string name="interactive_model">Interactive Model</string>
+    <string name="welcome_signin">Welcome — please sign in</string>
+    <string name="create_account">Create account</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="login">Log in</string>
+    <string name="create">Create account</string>
+</resources>
