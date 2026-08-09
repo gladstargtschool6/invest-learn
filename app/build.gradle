@@ -1,8 +1,11 @@
+// app/build.gradle
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 
 android {
     compileSdkVersion 33
+
+    def openaiApiKey = project.hasProperty('OPENAI_API_KEY') ? project.OPENAI_API_KEY : ""
 
     defaultConfig {
         applicationId "com.gladstargtschool6.investlearn"
@@ -10,6 +13,8 @@ android {
         targetSdkVersion 33
         versionCode 1
         versionName "0.1"
+
+        buildConfigField "String", "OPENAI_API_KEY", '"' + openaiApiKey + '"'
     }
 
     buildTypes {

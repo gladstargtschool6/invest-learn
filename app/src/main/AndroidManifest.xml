@@ -12,6 +12,7 @@
         <activity android:name=".SignupActivity" />
         <activity android:name=".FeedActivity" />
         <activity android:name=".WebViewActivity" />
+        <activity android:name=".AIActivity" />
         <activity android:name=".MainActivity" />
         <activity android:name=".ModuleActivity" />
         <activity android:name=".LoginActivity">
