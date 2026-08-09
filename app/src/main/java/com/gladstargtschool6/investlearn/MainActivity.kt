@@ -15,6 +15,7 @@ class MainActivity : AppCompatActivity() {
         val btnInteractive = findViewById<Button>(R.id.btnInteractive)
         val btnResources = findViewById<Button>(R.id.btnResources)
         val btnCoach = findViewById<Button>(R.id.btnCoach)
+        val btnAssessments = findViewById<Button>(R.id.btnAssessments)
 
         btnEntrepreneur.setOnClickListener {
             startModule("Entrepreneurship")
@@ -34,6 +35,10 @@ class MainActivity : AppCompatActivity() {
 
         btnCoach.setOnClickListener {
             startActivity(Intent(this, AIActivity::class.java))
+        }
+
+        btnAssessments.setOnClickListener {
+            startActivity(Intent(this, AssessmentsActivity::class.java))
         }
     }
 

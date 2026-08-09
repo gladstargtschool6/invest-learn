@@ -13,6 +13,7 @@
         <activity android:name=".FeedActivity" />
         <activity android:name=".WebViewActivity" />
         <activity android:name=".AIActivity" />
+        <activity android:name=".AssessmentsActivity" />
         <activity android:name=".MainActivity" />
         <activity android:name=".ModuleActivity" />
         <activity android:name=".LoginActivity">

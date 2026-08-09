@@ -48,4 +48,11 @@
         android:text="AI Coach & Assessment"
         android:layout_marginTop="8dp" />
 
+    <Button
+        android:id="@+id/btnAssessments"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Assessments"
+        android:layout_marginTop="8dp" />
+
 </LinearLayout>
