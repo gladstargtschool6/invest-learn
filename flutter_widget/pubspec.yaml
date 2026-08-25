@@ -1,0 +1,15 @@
+name: assessment_widget
+description: A reusable Flutter widget to display and export assessments as CSV.
+version: 0.1.0
+publish_to: none
+
+environment:
+  sdk: ">=2.17.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  share_plus: ^6.3.0
+
+flutter:
+  uses-material-design: true
