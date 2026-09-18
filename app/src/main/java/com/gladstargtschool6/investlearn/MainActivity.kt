@@ -1,8 +1,10 @@
 package com.gladstargtschool6.investlearn
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 
 class MainActivity : AppCompatActivity() {
@@ -10,41 +12,25 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val btnEntrepreneur = findViewById<Button>(R.id.btnEntrepreneurship)
-        val btnLeadership = findViewById<Button>(R.id.btnLeadership)
-        val btnInteractive = findViewById<Button>(R.id.btnInteractive)
-        val btnResources = findViewById<Button>(R.id.btnResources)
-        val btnCoach = findViewById<Button>(R.id.btnCoach)
-        val btnAssessments = findViewById<Button>(R.id.btnAssessments)
+        findViewById<Button>(R.id.btnEntrepreneurship).setOnClickListener { startModule("Entrepreneurship") }
+        findViewById<Button>(R.id.btnLeadership).setOnClickListener { startModule("Leadership") }
+        findViewById<Button>(R.id.btnInteractive).setOnClickListener { startModule("Interactive Model") }
+        findViewById<Button>(R.id.btnResources).setOnClickListener { startActivity(Intent(this, FeedActivity::class.java)) }
+        findViewById<Button>(R.id.btnCoach).setOnClickListener { startActivity(Intent(this, AIActivity::class.java)) }
+        findViewById<Button>(R.id.btnAssessments).setOnClickListener { openFlutterUi() }
+    }
 
-        btnEntrepreneur.setOnClickListener {
-            startModule("Entrepreneurship")
-        }
-
-        btnLeadership.setOnClickListener {
-            startModule("Leadership")
-        }
-
-        btnInteractive.setOnClickListener {
-            startModule("Interactive Model")
-        }
-
-        btnResources.setOnClickListener {
-            startActivity(Intent(this, FeedActivity::class.java))
-        }
-
-        btnCoach.setOnClickListener {
-            startActivity(Intent(this, AIActivity::class.java))
-        }
-
-        btnAssessments.setOnClickListener {
+    private fun openFlutterUi() {
+        try {
+            val flutterActivity = Class.forName("io.flutter.embedding.android.FlutterActivity") as Class<out Activity>
+            startActivity(Intent(this, flutterActivity))
+        } catch (_: ClassNotFoundException) {
+            Toast.makeText(this, "Flutter module is not generated; opening native assessments", Toast.LENGTH_LONG).show()
             startActivity(Intent(this, AssessmentsActivity::class.java))
         }
     }
 
     private fun startModule(name: String) {
-        val intent = Intent(this, ModuleActivity::class.java)
-        intent.putExtra("module_name", name)
-        startActivity(intent)
+        startActivity(Intent(this, ModuleActivity::class.java).putExtra("module_name", name))
     }
 }
