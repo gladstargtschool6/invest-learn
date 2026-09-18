@@ -21,9 +21,17 @@
         android:layout_weight="1" />
 
     <Button
+        android:id="@+id/btnTeacherLogin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Teacher login to enable export"
+        android:layout_marginTop="8dp" />
+
+    <Button
         android:id="@+id/btnExportCsv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Export as CSV" />
+        android:text="Export as CSV"
+        android:layout_marginTop="8dp" />
 
 </LinearLayout>

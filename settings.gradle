@@ -1,2 +1,8 @@
 rootProject.name = "InvestLearn"
 include ':app'
+
+// To embed the Flutter module, uncomment the lines below after you convert flutter_module into a Flutter module
+// (run on your machine: `flutter create -t module flutter_module` and then merge lib/ and assets/ into it).
+
+// include ':flutter'
+// setProjectDir(':flutter', file('flutter_module'))

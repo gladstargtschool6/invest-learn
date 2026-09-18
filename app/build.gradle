@@ -6,6 +6,7 @@ android {
     compileSdkVersion 33
 
     def openaiApiKey = project.hasProperty('OPENAI_API_KEY') ? project.OPENAI_API_KEY : ""
+    def teacherCode = project.hasProperty('TEACHER_CODE') ? project.TEACHER_CODE : ""
 
     defaultConfig {
         applicationId "com.gladstargtschool6.investlearn"
@@ -15,6 +16,7 @@ android {
         versionName "0.1"
 
         buildConfigField "String", "OPENAI_API_KEY", '"' + openaiApiKey + '"'
+        buildConfigField "String", "TEACHER_CODE", '"' + teacherCode + '"'
     }
 
     buildTypes {
