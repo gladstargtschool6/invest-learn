@@ -4,7 +4,7 @@ import React from 'react';
 const App = () => {
   return (
     <div>
-      <h1>Welcome to Invest-Learn</h1>
+      <h1>Welcome to Gladstar Gifted and Talented School</h1>
     </div>
   );
 };
