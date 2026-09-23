@@ -23,57 +23,130 @@ class PremiumService extends ChangeNotifier {
   bool loading = false;
 
   PremiumService({InAppPurchase? billing}) : billing = billing ?? InAppPurchase.instance {
-    _subscription = this.billing.purchaseStream.listen(_onPurchases, onError: (_) {
-      state = EntitlementState.free;
-      message = 'Google Play is temporarily unavailable. Please try again.';
-      notifyListeners();
-    });
+    _subscription = this.billing.purchaseStream.listen(
+      _onPurchases,
+      onError: (_) {
+        state = EntitlementState.free;
+        message = 'Google Play is temporarily unavailable. Please try again.';
+        notifyListeners();
+      },
+    );
     loadProducts();
   }
 
+  ProductDetails? _findProduct(List<ProductDetails> details, String productId) {
+    for (final product in details) {
+      if (product.id == productId) return product;
+    }
+    return null;
+  }
+
   Future<void> loadProducts() async {
-    loading = true; notifyListeners();
+    loading = true;
+    notifyListeners();
+
     final available = await billing.isAvailable();
-    if (!available) { message = 'Google Play Billing is unavailable on this device.'; loading = false; notifyListeners(); return; }
+    if (!available) {
+      message = 'Google Play Billing is unavailable on this device.';
+      loading = false;
+      notifyListeners();
+      return;
+    }
+
     final response = await billing.queryProductDetails({PremiumConfig.monthlyId, PremiumConfig.annualId});
-    monthly = response.productDetails.where((p) => p.id == PremiumConfig.monthlyId).cast<ProductDetails?>().firstOrNull;
-    annual = response.productDetails.where((p) => p.id == PremiumConfig.annualId).cast<ProductDetails?>().firstOrNull;
-    if (response.notFoundIDs.isNotEmpty) message = 'Premium plans are not configured in Google Play yet.';
-    loading = false; notifyListeners();
+    monthly = _findProduct(response.productDetails, PremiumConfig.monthlyId);
+    annual = _findProduct(response.productDetails, PremiumConfig.annualId);
+
+    if (response.notFoundIDs.isNotEmpty) {
+      message = 'Premium plans are not configured in Google Play yet.';
+    }
+
+    loading = false;
+    notifyListeners();
   }
 
   Future<void> buy(ProductDetails product) async {
-    message = null; loading = true; notifyListeners();
-    final param = GooglePlayPurchaseParam(productDetails: product);
+    message = null;
+    loading = true;
+    notifyListeners();
+
+    final param = GooglePlayPurchaseParam(
+      productDetails: product,
+      applicationUserName: null,
+    );
+
     await billing.buyNonConsumable(purchaseParam: param);
   }
 
-  Future<void> restore() => billing.restorePurchases();
+  Future<void> restore() async {
+    await billing.restorePurchases();
+  }
 
   Future<void> _onPurchases(List<PurchaseDetails> purchases) async {
     for (final purchase in purchases) {
-      if (purchase.status == PurchaseStatus.pending) { state = EntitlementState.premiumPending; message = 'Your payment is pending Google Play confirmation.'; notifyListeners(); continue; }
-      if (purchase.status == PurchaseStatus.error) { state = EntitlementState.free; message = purchase.error?.message ?? 'The purchase could not be completed.'; notifyListeners(); continue; }
-      if (purchase.status == PurchaseStatus.canceled) { state = EntitlementState.free; message = 'Purchase cancelled.'; notifyListeners(); continue; }
+      if (purchase.status == PurchaseStatus.pending) {
+        state = EntitlementState.premiumPending;
+        message = 'Your payment is pending Google Play confirmation.';
+        notifyListeners();
+        continue;
+      }
+
+      if (purchase.status == PurchaseStatus.error) {
+        state = EntitlementState.free;
+        message = purchase.error?.message ?? 'The purchase could not be completed.';
+        notifyListeners();
+        continue;
+      }
+
+      if (purchase.status == PurchaseStatus.canceled) {
+        state = EntitlementState.free;
+        message = 'Purchase cancelled.';
+        notifyListeners();
+        continue;
+      }
+
       if (purchase.status == PurchaseStatus.purchased || purchase.status == PurchaseStatus.restored) {
         final verified = await _verifyWithBackend(purchase);
         state = verified ? EntitlementState.premiumActive : EntitlementState.premiumPending;
-        message = verified ? 'Premium AI Coaching is now active.' : 'Payment received. Premium will unlock after account verification.';
+        message = verified
+            ? 'Premium AI Coaching is now active.'
+            : 'Payment received. Premium will unlock after account verification.';
         notifyListeners();
       }
-      if (purchase.pendingCompletePurchase) await billing.completePurchase(purchase);
+
+      if (purchase.pendingCompletePurchase) {
+        await billing.completePurchase(purchase);
+      }
     }
   }
 
   Future<bool> _verifyWithBackend(PurchaseDetails purchase) async {
-    // Never unlock Premium from the client receipt alone. The backend must call
-    // Google Play Developer API and persist entitlement against the user account.
-    if (PremiumConfig.verifyEndpoint.isEmpty || PremiumConfig.accountToken.isEmpty) return false;
-    final response = await http.post(Uri.parse(PremiumConfig.verifyEndpoint), headers: {'content-type': 'application/json', 'authorization': 'Bearer ${PremiumConfig.accountToken}'}, body: jsonEncode({'productId': purchase.productID, 'purchaseToken': purchase.verificationData.serverVerificationData}));
-    return response.statusCode == 200 && (jsonDecode(response.body)['entitlement'] == 'PREMIUM_ACTIVE');
+    // Never unlock Premium from the client receipt alone.
+    // The backend must call the Google Play Developer API and persist entitlement against the authenticated user.
+    if (PremiumConfig.verifyEndpoint.isEmpty || PremiumConfig.accountToken.isEmpty) {
+      return false;
+    }
+
+    final response = await http.post(
+      Uri.parse(PremiumConfig.verifyEndpoint),
+      headers: {
+        'content-type': 'application/json',
+        'authorization': 'Bearer ${PremiumConfig.accountToken}',
+      },
+      body: jsonEncode({
+        'productId': purchase.productID,
+        'purchaseToken': purchase.verificationData.serverVerificationData,
+      }),
+    );
+
+    if (response.statusCode != 200) return false;
+    final decoded = jsonDecode(response.body);
+    return decoded is Map && decoded['entitlement'] == 'PREMIUM_ACTIVE';
   }
 
-  @override void dispose() { _subscription?.cancel(); super.dispose(); }
+  @override
+  void dispose() {
+    _subscription?.cancel();
+    super.dispose();
+  }
 }
-
-extension _FirstOrNull<T> on Iterable<T> { T? get firstOrNull => isEmpty ? null : first; }
