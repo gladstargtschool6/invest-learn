@@ -1,4 +1,4 @@
-rootProject.name = "InvestLearn"
+rootProject.name = "Gladstar GT School"
 include ':app'
 
 // To embed the Flutter module, uncomment the lines below after you convert flutter_module into a Flutter module
