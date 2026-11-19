@@ -1,5 +1,5 @@
 name: flutter_module
-description: Flutter module included in the repository — contains Assessment widget, Weather dashboard (Open-Meteo), and Courses viewer (local JSON).
+description: Flutter module included in the repository — contains coaching, weather, courses, and premium billing.
 version: 0.1.0
 publish_to: none
 
@@ -11,6 +11,7 @@ dependencies:
     sdk: flutter
   http: ^0.13.6
   share_plus: ^6.3.0
+  in_app_purchase: ^3.1.11
 
 flutter:
   uses-material-design: true
