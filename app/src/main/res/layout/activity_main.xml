@@ -45,7 +45,7 @@
         android:id="@+id/btnCoach"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="AI Coach & Assessment"
+        android:text="AI Coach &amp; Assessment"
         android:layout_marginTop="8dp" />
 
     <Button
